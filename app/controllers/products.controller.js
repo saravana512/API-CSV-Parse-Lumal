@@ -47,7 +47,7 @@ const processCSV = async (filePath, requestId) => {
 			})
 			.on('close', () => {
 				logger.info({ requestId, message: `CSV file closed: ${filePath}` });
-				fs.unlinkSync(filePath);
+				fs.promises.unlink(filePath);
 				logger.info({ requestId, message: `CSV file deleted: ${filePath}` });
 			})
 			.on('data', async row => {
