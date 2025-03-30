@@ -6,7 +6,6 @@ const compression = require('compression');
 const cors = require('cors');
 const hpp = require('hpp');
 const swaggerUi = require('swagger-ui-express');
-const multer = require('multer');
 
 const app = express();
 
@@ -19,6 +18,8 @@ const { limiter } = require('./middlewares/rateLimiter');
 const everyReqDetails = require('./middlewares/everyReqCatcher');
 const swaggerSpec = require('./APIDocs/swaggerConfig');
 const productRoute = require('./app/routes/products.route');
+require('./crons/productDailyRefresh.cron');
+require('./database/db');
 
 const port = process.env.PORT;
 
