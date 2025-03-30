@@ -1,0 +1,7 @@
+Order ID,Product ID,Customer ID,Product Name,Category,Region,Date of Sale,Quantity Sold,Unit Price,Discount,Shipping Cost,Payment Method,Customer Name,Customer Email,Customer Address
+1001,P123,C456,UltraBoost Running Shoes,Shoes,North America,2023-12-15,2,180.0,0.1,10.0,Credit Card,John Smith,johnsmith@email.com,"123 Main St, Anytown, CA 12345"
+1002,P456,C789,iPhone 15 Pro,Electronics,Europe,2024-01-03,1,1299.0,0.0,15.0,PayPal,Emily Davis,emilydavis@email.com,"456 Elm St, Otherville, NY 54321"
+1003,P789,C456,Levi's 501 Jeans,Clothing,Asia,2024-02-28,3,59.99,0.2,5.0,Debit Card,John Smith,johnsmith@email.com,"123 Main St, Anytown, CA 12345"
+1004,P123,C101,UltraBoost Running Shoes,Shoes,South America,2024-03-10,1,180.0,0.0,8.0,Credit Card,Sarah Johnson,sarahjohnson@email.com,"789 Oak St, New City, TX 75024"
+1005,P234,C789,Sony WH-1000XM5 Headphones,Electronics,North America,2024-04-22,1,349.99,0.15,12.0,PayPal,Emily Davis,emilydavis@email.com,"456 Elm St, Otherville, NY 54321"
+1006,P456,C101,iPhone 15 Pro,Electronics,Asia,2024-05-18,2,1299.0,0.05,20.0,Debit Card,Sarah Johnson,sarahjohnson@email.com,"789 Oak St, New City, TX 75024"
