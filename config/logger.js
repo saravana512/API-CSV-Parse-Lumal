@@ -9,7 +9,6 @@ const transport = new winston.transports.DailyRotateFile({
 	zippedArchive: true,
 	maxSize: '500m',
 	maxFiles: '90d',
-	colorize: true,
 	format: winston.format.combine(
 		winston.format.timestamp({
 			format: 'MMM-DD-YYYY HH:mm:ss.SSS'
@@ -18,7 +17,8 @@ const transport = new winston.transports.DailyRotateFile({
 			if (info.username === undefined) {
 				info.username = 'NA';
 			}
-			return `{"DateTime":"${info.timestamp}","Level":"${info.level}","RequestId":"${info.requestId}","Username":"${info.username}","Module":"${info.reqdetails}","Message": "${info.message}"}`;
+			const log = `{"DateTime":"${info.timestamp}","Level":"${info.level}","RequestId":"${info.requestId}","Username":"${info.username}","Module":"${info.reqdetails}","Message": "${info.message}"}`;
+			return log;
 		})
 	)
 });

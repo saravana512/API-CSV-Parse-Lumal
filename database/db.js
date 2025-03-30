@@ -6,7 +6,10 @@ const pool = new pg.Pool({
 	host: process.env.DATABASE_HOST,
 	port: process.env.DATABASE_PORT,
 	database: process.env.DATABASE_NAME,
-	port: 5432
+	port: 5432,
+	max: 50,
+	idleTimeoutMillis: 30000,
+	connectionTimeoutMillis: 2000
 });
 
 module.exports = pool;
