@@ -124,3 +124,18 @@ exports.customerAnalytics = async (start_date, end_date) => {
 	const { rows } = await pool.query(query, [start_date, end_date]);
 	return rows;
 };
+
+exports.metrics = async (start_date, end_date) => {
+	const query = `
+	SELECT 
+		product_name,
+		(SUM(total_price) - SUM(cost_price * quantity)) / SUM(total_price) AS profit_margin,
+		customer_id,
+		SUM(total_price) AS customer_lifetime_value
+	FROM orders
+	WHERE order_date BETWEEN $1 AND $2
+	GROUP BY product_name, customer_id
+	`;
+	const { rows } = await pool.query(query, [start_date, end_date]);
+	return rows;
+};

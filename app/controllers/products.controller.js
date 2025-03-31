@@ -76,6 +76,22 @@ exports.customers = async (req, res, next) => {
 	}
 };
 
+exports.metrics = async (req, res, next) => {
+	try {
+		logger.info({ requestId: req.id, message: `ip: ${req.ip} 'Metrics req received'` });
+		const { startDate, endDate } = req.params;
+		if (!startDate || !endDate || !moment(startDate, 'YYYY-MM-DD', true).isValid() || !moment(endDate, 'YYYY-MM-DD', true).isValid() || moment(startDate).isAfter(endDate)) {
+			logger.warn({ requestId: req.id, message: 'Start date or end date not provided' });
+			return res.status(400).send('Start date or end date not provided');
+		}
+		const metrics = await products.metrics(startDate, endDate);
+		res.status(200).json({ metrics });
+	} catch (error) {
+		logger.error({ requestId: req.id, message: `Error in metrics: ${error.message}` });
+		next(error);
+	}
+};
+
 exports.processCSV = async (filePath, requestId) => {
 	try {
 		const batchSize = 5;
