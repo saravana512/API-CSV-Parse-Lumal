@@ -1,0 +1,7 @@
+Order ID,Product ID,Customer ID,Product Name,Category,Region,Date of Sale,Quantity Sold,Unit Price,Discount,Shipping Cost,Payment Method,Customer Name,Customer Email,Customer Address
+1001,P123,C456,iPhone 15 Pro,Electronics,North America,15/12/2023,2,180,0.1,10,Credit Card,Customer_653056,customer218055@example.com,"789 Oak St, New City, TX 75024"
+1002,P456,C789,iPhone 15 Pro,Electronics,Europe,03/01/2024,1,1299,0,15,PayPal,Customer_825578,customer203507@example.com,"789 Oak St, New City, TX 75024"
+1003,P789,C456,iPhone 15 Pro,Electronics,Asia,28/02/2024,3,59.99,0.2,5,Debit Card,Customer_653056,customer218055@example.com,"789 Oak St, New City, TX 75024"
+1004,P123,C101,iPhone 15 Pro,Electronics,South America,10/03/2024,1,180,0,8,Credit Card,Customer_340024,customer139905@example.com,"123 Main St, Anytown, CA 12345"
+1005,P234,C789,iPhone 15 Pro,Electronics,North America,22/04/2024,1,349.99,0.15,12,PayPal,Customer_825578,customer203507@example.com,"789 Oak St, New City, TX 75024"
+1006,P456,C101,iPhone 15 Pro,Electronics,Asia,18/05/2024,2,1299,0.05,20,Debit Card,Customer_340024,customer139905@example.com,"123 Main St, Anytown, CA 12345"

@@ -17,7 +17,7 @@ exports.importproducts = async (req, res, next) => {
 		}
 
 		logger.info({ requestId: req.id, message: `File upload started: ${req.file.path}` });
-		processCSV(req.file.path, req.id);
+		this.processCSV(req.file.path, req.id);
 		res.send('File uploaded and processing started');
 	} catch (error) {
 		logger.error({ requestId: req.id, message: `Error in importproducts: ${error.message}` });
@@ -25,7 +25,7 @@ exports.importproducts = async (req, res, next) => {
 	}
 };
 
-const processCSV = async (filePath, requestId) => {
+exports.processCSV = async (filePath, requestId) => {
 	try {
 		const batchSize = 5;
 		const results = [];
@@ -68,7 +68,7 @@ const processCSV = async (filePath, requestId) => {
 			})
 			.on('close', async () => {
 				logger.info({ requestId, message: `CSV file closed: ${filePath}` });
-				await fs.promises.unlink(filePath);
+				// await fs.promises.unlink(filePath);
 				logger.info({ requestId, message: `CSV file deleted: ${filePath}` });
 			})
 			.on('data', async row => {
