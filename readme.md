@@ -106,12 +106,23 @@ The application includes Swagger for API documentation. You can access the Swagg
 
 ## Design Decisions
 
+## Design Decisions
+
 1. **Backend Framework**: Node.js with Express.js for its simplicity and scalability.
-2. **Database**: PostgreSQL for its robust support for relational data and performance.
-3. **CSV Parsing**: Used `multer` for file uploads and `csv-parser` for efficient CSV file handling.
-4. **Performance Optimization**: Implemented streaming for large file uploads and database indexing for faster queries.
-5. **Modular Design**: Routes, controllers, and services are separated for better maintainability and scalability.
-6. **Cron Jobs**: Used the `cron` library to schedule and automate periodic tasks, such as cleaning up old data or generating reports.
+
+2. **Database**: PostgreSQL for its robust support for relational data and performance. To ensure optimal performance, database indexing has been implemented on frequently queried columns, such as primary keys and foreign keys, to speed up data retrieval. Additionally, the database schema has been designed with table separation to normalize data and reduce redundancy, ensuring efficient storage and scalability. For handling large datasets, batch inserts are performed using the `pg-format` library, which allows for efficient bulk data insertion into PostgreSQL tables. This approach minimizes the number of database transactions, significantly improving execution speed when processing large CSV files.
+
+3. **CSV Parsing**: Used `multer` for handling file uploads and `csv-parse` for efficient and memory-friendly CSV file processing. The CSV files are read as streams to handle large files without overloading the server's memory. This streaming approach ensures that the application can process files of virtually any size without performance degradation.
+
+4. **Performance Optimization**: To further enhance performance, the application uses streaming for file uploads and processing, allowing data to be processed in chunks rather than loading the entire file into memory. Database indexing has been implemented to optimize query performance, and batch inserts are used to reduce the overhead of multiple database transactions. These techniques collectively ensure that the application can handle large datasets efficiently.
+
+5. **Modular Design**: The application follows a modular design pattern, separating routes, controllers, and services into distinct layers. This separation of concerns improves code maintainability, scalability, and readability, making it easier to add new features or modify existing ones.
+
+6. **Cron Jobs**: The `cron` library is used to schedule and automate periodic tasks, such as cleaning up old data, generating reports, or performing routine maintenance tasks. This ensures that the application remains efficient and up-to-date without requiring manual intervention.
+
+7. **Batch Processing and Streaming**: For handling large datasets, the application reads CSV files as streams and processes them in chunks. This approach prevents memory overload and ensures smooth operation even with very large files. The processed data is then inserted into the database in batches using `pg-format`, which significantly reduces the number of database transactions and improves overall execution speed.
+
+By combining these techniques, the application is designed to handle large-scale data processing tasks efficiently while maintaining high performance and scalability.
 
 ---
 
