@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const { parse } = require('csv-parse');
+const moment = require('moment');
 
 const pool = require('../../database/db');
 const products = require('../models/product.model');
@@ -27,9 +28,27 @@ exports.importproducts = async (req, res, next) => {
 
 const processCSV = async (filePath, requestId) => {
 	try {
-		const batchSize = 100;
+		const batchSize = 5;
 		const results = [];
 		logger.info({ requestId, message: 'Database connection established' });
+
+		const productList = new Map();
+		const customerList = new Map();
+		const productsDbList = products.listAllProducts();
+		const customersDbList = products.listAllCustomers();
+
+		const [pDbList, cDbList] = await Promise.all([productsDbList, customersDbList]);
+
+		pDbList.forEach(element => {
+			productList.set(element.product_id, element);
+		});
+
+		cDbList.forEach(element => {
+			customerList.set(element.customer_id, element);
+		});
+
+		pDbList.length = 0;
+		cDbList.length = 0;
 
 		fs.createReadStream(filePath)
 			.pipe(
@@ -45,22 +64,52 @@ const processCSV = async (filePath, requestId) => {
 			.on('open', () => {
 				logger.info({ requestId, message: `CSV file opened: ${filePath}` });
 			})
-			.on('close', () => {
+			.on('close', async () => {
 				logger.info({ requestId, message: `CSV file closed: ${filePath}` });
-				fs.promises.unlink(filePath);
+				await fs.promises.unlink(filePath);
 				logger.info({ requestId, message: `CSV file deleted: ${filePath}` });
 			})
 			.on('data', async row => {
-				results.push(row);
-				if (results.length === batchSize) {
-					try {
-						logger.info({ requestId, message: `Inserting batch of ${batchSize} products` });
-						// await products.insertProducts(client, results);
-						logger.info({ requestId, message: 'Batch inserted successfully' });
-					} catch (error) {
-						logger.error({ requestId, message: `Error inserting batch: ${error.message}` });
+				try {
+					logger.info({ requestId, message: `Inserting batch of ${batchSize} products` });
+
+					const {
+						'Order ID': orderId,
+						'Product ID': productId,
+						'Customer ID': customerId,
+						'Product Name': productName,
+						Category: category,
+						Region: region,
+						'Date of Sale': dateOfSale,
+						'Quantity Sold': quantitySold,
+						'Unit Price': unitPrice,
+						Discount: discount,
+						'Shipping Cost': shippingCost,
+						'Payment Method': paymentMethod,
+						'Customer Name': customerName,
+						'Customer Email': customerEmail,
+						'Customer Address': customerAddress
+					} = row;
+
+					// file_order_id TEXT,
+					// customer_id UUID,
+					// date_of_sale DATE,
+					// payment_method TEXT,
+					// total_amount NUMERIC(10,2)
+
+					if (customerList.has(customerId)) {
+						const date = moment(dateOfSale, 'DD/MM/YYYY').format('YYYY-MM-DD');
+						results.push([orderId, customerId, date, paymentMethod, unitPrice]);
+						if (results.length === batchSize) {
+							logger.info({ requestId, message: `Inserting batch of ${results.length} products` });
+							await products.insertOrders(results);
+							results.length = 0;
+						}
 					}
-					results.length = 0;
+
+					logger.info({ requestId, message: 'Batch inserted successfully' });
+				} catch (error) {
+					logger.error({ requestId, message: `Error inserting batch: ${error.message}` });
 				}
 			})
 			.on('end', async () => {
