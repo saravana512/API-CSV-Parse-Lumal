@@ -25,6 +25,57 @@ exports.importproducts = async (req, res, next) => {
 	}
 };
 
+exports.revenueCalculation = async (req, res, next) => {
+	try {
+		logger.info({ requestId: req.id, message: `ip: ${req.ip} 'Revenue calculation req received'` });
+
+		const { startDate, endDate } = req.params;
+
+		if (!startDate || !endDate || !moment(startDate, 'YYYY-MM-DD', true).isValid() || !moment(endDate, 'YYYY-MM-DD', true).isValid() || moment(startDate).isAfter(endDate)) {
+			logger.warn({ requestId: req.id, message: 'Start date or end date not provided' });
+			return res.status(400).send('Start date or end date not provided');
+		}
+
+		const revenue = await products.revenueCalculation(startDate, endDate);
+		res.status(200).json({ revenue });
+	} catch (error) {
+		logger.error({ requestId: req.id, message: `Error in revenueCalculation: ${error.message}` });
+		next(error);
+	}
+};
+
+exports.topProducts = async (req, res, next) => {
+	try {
+		logger.info({ requestId: req.id, message: `ip: ${req.ip} 'Top products req received'` });
+		const { startDate, endDate, limit } = req.params;
+		if (!startDate || !endDate || !limit || !moment(startDate, 'YYYY-MM-DD', true).isValid() || !moment(endDate, 'YYYY-MM-DD', true).isValid() || moment(startDate).isAfter(endDate)) {
+			logger.warn({ requestId: req.id, message: 'Start date or end date not provided' });
+			return res.status(400).send('Start date or end date not provided');
+		}
+		const topProducts = await products.topProducts(startDate, endDate, limit);
+		res.status(200).json({ topProducts });
+	} catch (error) {
+		logger.error({ requestId: req.id, message: `Error in topProducts: ${error.message}` });
+		next(error);
+	}
+};
+
+exports.customers = async (req, res, next) => {
+	try {
+		logger.info({ requestId: req.id, message: `ip: ${req.ip} 'Customers req received'` });
+		const { startDate, endDate } = req.params;
+		if (!startDate || !endDate || !moment(startDate, 'YYYY-MM-DD', true).isValid() || !moment(endDate, 'YYYY-MM-DD', true).isValid() || moment(startDate).isAfter(endDate)) {
+			logger.warn({ requestId: req.id, message: 'Start date or end date not provided' });
+			return res.status(400).send('Start date or end date not provided');
+		}
+		const customerAnalytics = await products.customerAnalytics(startDate, endDate);
+		res.status(200).json({ customerAnalytics });
+	} catch (error) {
+		logger.error({ requestId: req.id, message: `Error in customer analytics: ${error.message}` });
+		next(error);
+	}
+};
+
 exports.processCSV = async (filePath, requestId) => {
 	try {
 		const batchSize = 5;
@@ -112,7 +163,7 @@ exports.processCSV = async (filePath, requestId) => {
 
 						if (customer_id === customerId && customer_name === customerName && customer_email === customerEmail && customer_address === customerAddress) {
 							const date = moment(dateOfSale, 'DD/MM/YYYY').format('YYYY-MM-DD');
-							results.push([orderId, customerId, date, paymentMethod, unitPrice]);
+							results.push([orderId, customerId, date, paymentMethod, quantitySold * unitPrice * (1 - discount)]);
 							if (results.length === batchSize) {
 								logger.info({ requestId, message: `Inserting batch of ${results.length} products` });
 								await products.insertOrders(results);
