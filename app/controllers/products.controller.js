@@ -82,7 +82,6 @@ const processCSV = async (filePath, requestId) => {
 						'Customer ID': customerId,
 						'Product Name': productName,
 						Category: category,
-						Region: region,
 						'Date of Sale': dateOfSale,
 						'Quantity Sold': quantitySold,
 						'Unit Price': unitPrice,
